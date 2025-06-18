@@ -18,36 +18,36 @@ var assets embed.FS
 //go:embed build/appicon.png
 var icon []byte
 
+var title = "Planner"
+
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:             "project-name",
+		Title:             title,
 		Width:             1024,
 		Height:            768,
 		MinWidth:          1024,
 		MinHeight:         768,
-		MaxWidth:          1280,
-		MaxHeight:         800,
 		DisableResize:     false,
 		Fullscreen:        false,
 		Frameless:         false,
 		StartHidden:       false,
 		HideWindowOnClose: false,
 		BackgroundColour:  &options.RGBA{R: 255, G: 255, B: 255, A: 255},
-		AssetServer:       &assetserver.Options{
+		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		Menu:              nil,
-		Logger:            nil,
-		LogLevel:          logger.DEBUG,
-		OnStartup:         app.startup,
-		OnDomReady:        app.domReady,
-		OnBeforeClose:     app.beforeClose,
-		OnShutdown:        app.shutdown,
-		WindowStartState:  options.Normal,
+		Menu:             nil,
+		Logger:           nil,
+		LogLevel:         logger.DEBUG,
+		OnStartup:        app.startup,
+		OnDomReady:       app.domReady,
+		OnBeforeClose:    app.beforeClose,
+		OnShutdown:       app.shutdown,
+		WindowStartState: options.Normal,
 		Bind: []interface{}{
 			app,
 		},
@@ -58,23 +58,23 @@ func main() {
 			DisableWindowIcon:    false,
 			// DisableFramelessWindowDecorations: false,
 			WebviewUserDataPath: "",
-			ZoomFactor: 1.0,
+			ZoomFactor:          1.0,
 		},
 		// Mac platform specific options
 		Mac: &mac.Options{
 			TitleBar: &mac.TitleBar{
-				TitlebarAppearsTransparent: true,
-				HideTitle:                  false,
+				TitlebarAppearsTransparent: false,
+				HideTitle:                  true,
 				HideTitleBar:               false,
 				FullSizeContent:            false,
 				UseToolbar:                 false,
 				HideToolbarSeparator:       true,
 			},
 			Appearance:           mac.NSAppearanceNameDarkAqua,
-			WebviewIsTransparent: true,
-			WindowIsTranslucent:  true,
+			WebviewIsTransparent: false,
+			WindowIsTranslucent:  false,
 			About: &mac.AboutInfo{
-				Title:   "project-name",
+				Title:   title,
 				Message: "",
 				Icon:    icon,
 			},
