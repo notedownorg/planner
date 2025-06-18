@@ -16,8 +16,9 @@
             buildInputs = [
               git
               go
-              nodejs
               licenser.packages.${system}.default
+              nodejs
+              wails
             ];
           };
         }
