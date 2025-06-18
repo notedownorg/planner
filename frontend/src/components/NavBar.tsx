@@ -1,5 +1,3 @@
-import React from "react"
-
 export function NavBar() {
   return (
     <nav className="w-full border-b bg-background">
