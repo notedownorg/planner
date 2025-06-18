@@ -1,11 +1,16 @@
-.PHONY: dev build clean help
+.PHONY: dev build clean setup help
 
 # Default target
 help:
 	@echo "Available targets:"
+	@echo "  setup  - Install npm dependencies"
 	@echo "  dev    - Run in development mode"
 	@echo "  build  - Build the application"
 	@echo "  clean  - Clean build artifacts"
+
+# Setup dependencies
+setup:
+	cd frontend && nix develop -c npm install
 
 # Development mode
 dev:

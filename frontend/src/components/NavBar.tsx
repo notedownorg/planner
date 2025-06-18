@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useTheme } from "@/components/ThemeProvider"
+import { useTheme } from "@/components/providers/ThemeProvider"
 import { Moon, Sun } from "lucide-react"
 
 export function NavBar() {
