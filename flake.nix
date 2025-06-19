@@ -16,6 +16,7 @@
             buildInputs = [
               git
               go
+              gosec
               licenser.packages.${system}.default
               nodejs
               wails

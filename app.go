@@ -61,12 +61,12 @@ func (a *App) SelectWorkspaceDirectory() (string, error) {
 	options := runtime.OpenDialogOptions{
 		Title: "Select Workspace Directory",
 	}
-	
+
 	result, err := runtime.OpenDirectoryDialog(a.ctx, options)
 	if err != nil {
 		return "", err
 	}
-	
+
 	return result, nil
 }
 

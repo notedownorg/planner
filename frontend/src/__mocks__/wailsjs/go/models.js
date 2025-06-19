@@ -1,5 +1,5 @@
 export const config = {
-  Config: {
-    createFrom: (data) => data,
-  },
+    Config: {
+        createFrom: (data) => data,
+    },
 }
