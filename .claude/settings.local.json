@@ -6,7 +6,9 @@
       "Bash(npm view:*)",
       "Bash(npm audit:*)",
       "Bash(npm run build:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(go test:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

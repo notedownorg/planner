@@ -59,7 +59,7 @@ test-frontend:
 
 test-backend:
 	@echo "Running backend tests..."
-	@go test ./...
+	@go test -tags=dev ./...
 
 #=============================================================================
 # Code Hygiene
