@@ -1,6 +1,9 @@
 SHELL := nix develop --command bash
 .SHELLFLAGS := -euo pipefail -c
 
+# Suppress Nix git dirty warnings
+export NIX_CONFIG = warn-dirty = false
+
 .PHONY: dev build clean setup setup-frontend setup-backend help test test-frontend test-backend lint fmt dirty hygiene hygiene-frontend hygiene-backend
 
 # Default target
@@ -78,9 +81,9 @@ hygiene-backend:
 	@echo "Formatting Go code..."
 	@gofmt -w .
 	@echo "Running backend linting..."
-	@go vet ./...
+	@go vet -tags=dev ./...
 	@echo "Running security scan (gosec)..."
-	@gosec ./... || echo "⚠️  Security scan completed with warnings"
+	@gosec -tags=dev ./... || echo "⚠️  Security scan completed with warnings"
 	@echo "✅ Backend code quality checks passed!"
 
 dirty:

@@ -42,7 +42,7 @@ export function SettingsView({ config }: SettingsViewProps) {
             await ValidateWorkspacePath(path)
             setValidationError('')
             return true
-        } catch (error) {
+        } catch {
             setValidationError(
                 'Invalid workspace directory. Please ensure the path exists and is writable.'
             )
