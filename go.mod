@@ -1,10 +1,13 @@
-module project-name
+module github.com/notedownorg/planner
 
 go 1.22.0
 
 toolchain go1.24.3
 
-require github.com/wailsapp/wails/v2 v2.10.1
+require (
+	github.com/wailsapp/wails/v2 v2.10.1
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect

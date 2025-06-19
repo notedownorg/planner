@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/notedownorg/planner/pkg/config"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -41,4 +44,33 @@ func (a *App) shutdown(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+// GetConfig returns the current configuration
+func (a *App) GetConfig() (*config.Config, error) {
+	return config.Load()
+}
+
+// SaveConfig saves the configuration to disk
+func (a *App) SaveConfig(cfg *config.Config) error {
+	return config.Save(cfg)
+}
+
+// SelectWorkspaceDirectory opens a native directory picker
+func (a *App) SelectWorkspaceDirectory() (string, error) {
+	options := runtime.OpenDialogOptions{
+		Title: "Select Workspace Directory",
+	}
+	
+	result, err := runtime.OpenDirectoryDialog(a.ctx, options)
+	if err != nil {
+		return "", err
+	}
+	
+	return result, nil
+}
+
+// ValidateWorkspacePath validates if the given path is suitable for a workspace
+func (a *App) ValidateWorkspacePath(path string) error {
+	return config.ValidateWorkspacePath(path)
 }
