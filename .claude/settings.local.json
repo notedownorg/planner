@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(mkdir:*)",
-      "Bash(make:*)"
+      "Bash(make:*)",
+      "Bash(npm view:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm run build:*)",
+      "Bash(grep:*)",
+      "Bash(go test:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

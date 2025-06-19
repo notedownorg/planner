@@ -1,7 +1,7 @@
 package main
 
 import (
-	"embed"
+	_ "embed"
 	"log"
 
 	"github.com/wailsapp/wails/v2"
@@ -12,8 +12,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
-//go:embed all:frontend/dist
-var assets embed.FS
+// assets variable is defined in assets_prod.go (production) or assets_dev.go (development)
+// depending on build tags. See those files for implementation details.
 
 //go:embed build/appicon.png
 var icon []byte

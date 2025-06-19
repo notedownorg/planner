@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
@@ -15,7 +14,7 @@ describe('App Component', () => {
     })
 
     it('shows setup view when workspace path is not configured', async () => {
-        (AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
+        ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '',
             }
@@ -53,7 +52,7 @@ describe('App Component', () => {
     })
 
     it('shows home view when workspace path is configured', async () => {
-        (AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
+        ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '/path/to/workspace',
             }
@@ -119,7 +118,7 @@ describe('App Component', () => {
     })
 
     it('requires setup when workspace path is only whitespace', async () => {
-        (AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
+        ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '   ',
             }
@@ -139,9 +138,9 @@ describe('App Component', () => {
     })
 
     it('requires setup when workspace path is null', async () => {
-        (AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
+        ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
-                WorkspaceRoot: null as any,
+                WorkspaceRoot: '',
             }
         )
 
