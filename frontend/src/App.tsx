@@ -2,6 +2,7 @@ import { NavBar } from "@/components/NavBar"
 import { HomeView } from "@/components/views/HomeView"
 import { SettingsView } from "@/components/views/SettingsView"
 import { SetupView } from "@/components/views/SetupView"
+import { ThemeProvider } from "@/components/providers/ThemeProvider"
 import React from "react"
 import { GetConfig } from "wailsjs/go/main/App"
 import { config } from "wailsjs/go/models"
@@ -73,14 +74,16 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <NavBar
-        onNavigateToHome={navigateToHome}
-        onNavigateToSettings={navigateToSettings}
-        requiresSetup={requiresSetup}
-      />
-      {renderCurrentView()}
-    </div>
+    <ThemeProvider defaultTheme="system">
+      <div className="min-h-screen bg-background flex flex-col">
+        <NavBar
+          onNavigateToHome={navigateToHome}
+          onNavigateToSettings={navigateToSettings}
+          requiresSetup={requiresSetup}
+        />
+        {renderCurrentView()}
+      </div>
+    </ThemeProvider>
   )
 }
 
