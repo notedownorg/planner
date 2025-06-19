@@ -83,8 +83,8 @@ describe('App Component', () => {
         render(<App />)
 
         await waitFor(() => {
-            expect(screen.getByText('Vite + React + TS + Tailwind + shadcn/ui')).toBeInTheDocument()
-            expect(screen.getByRole('button', { name: /Count up/ })).toBeInTheDocument()
+            expect(screen.getByText(/Week \d+/)).toBeInTheDocument()
+            expect(screen.getByText('2025')).toBeInTheDocument()
         })
 
         // Weekly view button should not be disabled

@@ -30,11 +30,19 @@ describe('TaskTable', () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
-        ;(App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>).mockResolvedValue(mockHabits)
-        ;(App.ToggleHabit as jest.MockedFunction<typeof App.ToggleHabit>).mockResolvedValue(undefined)
+        ;(
+            App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>
+        ).mockResolvedValue(mockHabits)
+        ;(App.ToggleHabit as jest.MockedFunction<typeof App.ToggleHabit>).mockResolvedValue(
+            undefined
+        )
         ;(App.AddHabit as jest.MockedFunction<typeof App.AddHabit>).mockResolvedValue(undefined)
-        ;(App.RemoveHabit as jest.MockedFunction<typeof App.RemoveHabit>).mockResolvedValue(undefined)
-        ;(App.ReorderHabits as jest.MockedFunction<typeof App.ReorderHabits>).mockResolvedValue(undefined)
+        ;(App.RemoveHabit as jest.MockedFunction<typeof App.RemoveHabit>).mockResolvedValue(
+            undefined
+        )
+        ;(App.ReorderHabits as jest.MockedFunction<typeof App.ReorderHabits>).mockResolvedValue(
+            undefined
+        )
     })
 
     describe('Rendering', () => {
@@ -85,7 +93,9 @@ describe('TaskTable', () => {
         })
 
         it('should render error state when loading fails', async () => {
-            ;(App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>).mockRejectedValue(new Error('Network error'))
+            ;(
+                App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>
+            ).mockRejectedValue(new Error('Network error'))
 
             await act(async () => {
                 render(<TaskTable />)
@@ -266,22 +276,29 @@ describe('TaskTable', () => {
         })
 
         it('should delete habit when delete button is clicked', async () => {
-            const user = userEvent.setup()
-            render(<TaskTable />)
+            await act(async () => {
+                render(<TaskTable />)
+            })
 
             await waitFor(() => {
                 expect(screen.getByText('Exercise')).toBeInTheDocument()
             })
 
-            const habitPill = screen.getByText('Exercise').closest('div')!
-            await user.hover(habitPill)
+            // Find the specific Exercise pill
+            const habitPill = screen.getByText('Exercise').closest('.relative')!
 
+            // Simulate hover state by triggering mouse events
+            fireEvent.mouseEnter(habitPill)
+
+            // Wait for delete button to appear
+            await waitFor(() => {
+                const deleteButtons = screen.getAllByTitle('Remove habit')
+                expect(deleteButtons.length).toBeGreaterThan(0)
+            })
+
+            // Click the first delete button (should be Exercise since it's first in order)
             const deleteButtons = screen.getAllByTitle('Remove habit')
-            const deleteButton = deleteButtons.find(btn => 
-                btn.closest('[data-testid]')?.getAttribute('data-testid')?.includes('Exercise') ||
-                btn.parentElement?.textContent?.includes('Exercise')
-            ) || deleteButtons[0]
-            await user.click(deleteButton)
+            fireEvent.click(deleteButtons[0])
 
             expect(App.RemoveHabit).toHaveBeenCalledWith('Exercise')
         })
@@ -355,12 +372,16 @@ describe('TaskTable', () => {
         })
 
         it('should show placeholder text when no habits exist', async () => {
-            ;(App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>).mockResolvedValue(new habits.WeeklyHabits({
-                year: 2024,
-                week_number: 1,
-                habits: {},
-                day_status: {},
-            }))
+            ;(
+                App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>
+            ).mockResolvedValue(
+                new habits.WeeklyHabits({
+                    year: 2024,
+                    week_number: 1,
+                    habits: {},
+                    day_status: {},
+                })
+            )
 
             const user = userEvent.setup()
             await act(async () => {
