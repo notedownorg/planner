@@ -17,6 +17,17 @@ describe('App Component', () => {
         ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '',
+                PeriodicNotes: {
+                    WeeklySubdir: '_periodic/weekly',
+                    WeeklyNameFormat: 'YYYY-[W]WW',
+                },
+                WeeklyView: {
+                    EnabledComponents: {
+                        HabitTracker: true,
+                    },
+                    convertValues: () => {},
+                },
+                convertValues: () => {},
             }
         )
 
@@ -55,6 +66,17 @@ describe('App Component', () => {
         ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '/path/to/workspace',
+                PeriodicNotes: {
+                    WeeklySubdir: '_periodic/weekly',
+                    WeeklyNameFormat: 'YYYY-[W]WW',
+                },
+                WeeklyView: {
+                    EnabledComponents: {
+                        HabitTracker: true,
+                    },
+                    convertValues: () => {},
+                },
+                convertValues: () => {},
             }
         )
 
@@ -75,6 +97,17 @@ describe('App Component', () => {
         ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '',
+                PeriodicNotes: {
+                    WeeklySubdir: '_periodic/weekly',
+                    WeeklyNameFormat: 'YYYY-[W]WW',
+                },
+                WeeklyView: {
+                    EnabledComponents: {
+                        HabitTracker: true,
+                    },
+                    convertValues: () => {},
+                },
+                convertValues: () => {},
             }
         )
 
@@ -99,6 +132,17 @@ describe('App Component', () => {
         ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '',
+                PeriodicNotes: {
+                    WeeklySubdir: '_periodic/weekly',
+                    WeeklyNameFormat: 'YYYY-[W]WW',
+                },
+                WeeklyView: {
+                    EnabledComponents: {
+                        HabitTracker: true,
+                    },
+                    convertValues: () => {},
+                },
+                convertValues: () => {},
             }
         )
 
@@ -121,6 +165,17 @@ describe('App Component', () => {
         ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '   ',
+                PeriodicNotes: {
+                    WeeklySubdir: '_periodic/weekly',
+                    WeeklyNameFormat: 'YYYY-[W]WW',
+                },
+                WeeklyView: {
+                    EnabledComponents: {
+                        HabitTracker: true,
+                    },
+                    convertValues: () => {},
+                },
+                convertValues: () => {},
             }
         )
 
@@ -141,6 +196,17 @@ describe('App Component', () => {
         ;(AppModule.GetConfig as jest.MockedFunction<typeof AppModule.GetConfig>).mockResolvedValue(
             {
                 WorkspaceRoot: '',
+                PeriodicNotes: {
+                    WeeklySubdir: '_periodic/weekly',
+                    WeeklyNameFormat: 'YYYY-[W]WW',
+                },
+                WeeklyView: {
+                    EnabledComponents: {
+                        HabitTracker: true,
+                    },
+                    convertValues: () => {},
+                },
+                convertValues: () => {},
             }
         )
 
