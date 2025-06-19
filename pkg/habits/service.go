@@ -30,7 +30,7 @@ func (s *Service) GetWeeklyFilePath(year int, weekNumber int) string {
 	// Format: YYYY-[W]WW -> 2024-W01
 	weekStr := fmt.Sprintf("%d-W%02d", year, weekNumber)
 	filename := fmt.Sprintf("%s.md", weekStr)
-	
+
 	return filepath.Join(s.config.WorkspaceRoot, s.config.PeriodicNotes.WeeklySubdir, filename)
 }
 
@@ -44,25 +44,25 @@ func getCurrentWeekInfo() (int, int) {
 // LoadWeeklyHabits loads habits for a specific week
 func (s *Service) LoadWeeklyHabits(year int, weekNumber int) (*WeeklyHabits, error) {
 	filePath := s.GetWeeklyFilePath(year, weekNumber)
-	
+
 	// Check if file exists
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		// File doesn't exist, create new with default habits
 		return s.createNewWeeklyHabits(year, weekNumber)
 	}
-	
+
 	// Read existing file
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read weekly file: %w", err)
 	}
-	
+
 	// Parse markdown
 	doc, err := reader.ParseMarkdown(string(content))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse markdown: %w", err)
 	}
-	
+
 	// Extract habits from markdown
 	return s.extractHabitsFromDocument(doc, year, weekNumber)
 }
@@ -70,13 +70,13 @@ func (s *Service) LoadWeeklyHabits(year int, weekNumber int) (*WeeklyHabits, err
 // SaveWeeklyHabits saves habits to markdown file
 func (s *Service) SaveWeeklyHabits(habits *WeeklyHabits) error {
 	filePath := s.GetWeeklyFilePath(habits.Year, habits.WeekNumber)
-	
+
 	// Ensure directory exists
 	dir := filepath.Dir(filePath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("failed to create directory: %w", err)
 	}
-	
+
 	// Read existing content if file exists
 	var doc *markdown.Document
 	if _, err := os.Stat(filePath); err == nil {
@@ -84,7 +84,7 @@ func (s *Service) SaveWeeklyHabits(habits *WeeklyHabits) error {
 		if err != nil {
 			return fmt.Errorf("failed to read existing file: %w", err)
 		}
-		
+
 		doc, err = reader.ParseMarkdown(string(content))
 		if err != nil {
 			return fmt.Errorf("failed to parse existing markdown: %w", err)
@@ -93,18 +93,18 @@ func (s *Service) SaveWeeklyHabits(habits *WeeklyHabits) error {
 		// Create new document
 		doc = s.createNewWeeklyDocument(habits.Year, habits.WeekNumber)
 	}
-	
+
 	// Update or create habits section
 	if err := s.updateHabitsSection(doc, habits); err != nil {
 		return fmt.Errorf("failed to update habits section: %w", err)
 	}
-	
+
 	// Write back to file
 	content := writer.WriteDocument(doc)
 	if err := os.WriteFile(filePath, []byte(content), 0644); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -112,14 +112,14 @@ func (s *Service) SaveWeeklyHabits(habits *WeeklyHabits) error {
 func (s *Service) createNewWeeklyHabits(year int, weekNumber int) (*WeeklyHabits, error) {
 	// Get default habits from previous week or config
 	defaultHabits := s.getDefaultHabitsWithoutRecursion(year, weekNumber)
-	
+
 	habits := &WeeklyHabits{
 		Year:       year,
 		WeekNumber: weekNumber,
 		Habits:     make(map[string]*Habit),
 		DayStatus:  make(map[string]bool),
 	}
-	
+
 	// Initialize with default habits (all uncompleted)
 	for i, habitName := range defaultHabits {
 		habits.Habits[habitName] = &Habit{
@@ -128,7 +128,7 @@ func (s *Service) createNewWeeklyHabits(year int, weekNumber int) (*WeeklyHabits
 			Order:     i,
 		}
 	}
-	
+
 	return habits, nil
 }
 
@@ -140,7 +140,7 @@ func (s *Service) getDefaultHabits(year int, weekNumber int) []string {
 		prevYear--
 		prevWeek = 52 // Approximate - could be 53 in some years
 	}
-	
+
 	prevHabits, err := s.LoadWeeklyHabits(prevYear, prevWeek)
 	if err == nil && len(prevHabits.Habits) > 0 {
 		var habits []string
@@ -149,7 +149,7 @@ func (s *Service) getDefaultHabits(year int, weekNumber int) []string {
 		}
 		return habits
 	}
-	
+
 	// Return empty list - no default habits
 	return []string{}
 }
@@ -162,32 +162,32 @@ func (s *Service) getDefaultHabitsWithoutRecursion(year int, weekNumber int) []s
 		prevYear--
 		prevWeek = 52 // Approximate - could be 53 in some years
 	}
-	
+
 	// Check if previous week file exists and read it directly
 	filePath := s.GetWeeklyFilePath(prevYear, prevWeek)
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		// No previous week file, return empty
 		return []string{}
 	}
-	
+
 	// Read existing file
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return []string{}
 	}
-	
+
 	// Parse markdown
 	doc, err := reader.ParseMarkdown(string(content))
 	if err != nil {
 		return []string{}
 	}
-	
+
 	// Extract habits from markdown
 	prevHabits, err := s.extractHabitsFromDocument(doc, prevYear, prevWeek)
 	if err != nil || len(prevHabits.Habits) == 0 {
 		return []string{}
 	}
-	
+
 	var habits []string
 	for habitName := range prevHabits.Habits {
 		habits = append(habits, habitName)
@@ -198,12 +198,12 @@ func (s *Service) getDefaultHabitsWithoutRecursion(year int, weekNumber int) []s
 // createNewWeeklyDocument creates a new markdown document for a week
 func (s *Service) createNewWeeklyDocument(year int, weekNumber int) *markdown.Document {
 	doc := markdown.NewDocument()
-	
+
 	// Add main heading
 	weekTitle := fmt.Sprintf("Week %02d", weekNumber)
 	weekHeading := markdown.NewHeading(1, weekTitle)
 	doc.AddChild(weekHeading)
-	
+
 	return doc
 }
 
@@ -215,14 +215,14 @@ func (s *Service) extractHabitsFromDocument(doc *markdown.Document, year int, we
 		Habits:     make(map[string]*Habit),
 		DayStatus:  make(map[string]bool),
 	}
-	
+
 	// Find the Habits heading
 	habitsHeading := markdown.FindHeadingByTitle(doc, "Habits")
 	if habitsHeading == nil {
 		// No habits section found, return empty but valid structure
 		return habits, nil
 	}
-	
+
 	// Extract tasks from the habits section
 	tasks := markdown.FindTasks(habitsHeading)
 	for i, task := range tasks {
@@ -236,7 +236,7 @@ func (s *Service) extractHabitsFromDocument(doc *markdown.Document, year int, we
 			}
 		}
 	}
-	
+
 	return habits, nil
 }
 
@@ -249,7 +249,7 @@ func (s *Service) updateHabitsSection(doc *markdown.Document, habits *WeeklyHabi
 		weekHeading = markdown.NewHeading(1, weekTitle)
 		doc.AddChild(weekHeading)
 	}
-	
+
 	// Find or create the Habits heading
 	habitsHeading := markdown.FindHeadingByTitle(weekHeading, "Habits")
 	if habitsHeading == nil {
@@ -259,7 +259,7 @@ func (s *Service) updateHabitsSection(doc *markdown.Document, habits *WeeklyHabi
 		// Clear existing children to avoid duplicates when updating
 		habitsHeading.ClearChildren()
 	}
-	
+
 	// Sort habits by order before adding them
 	var sortedHabits []*Habit
 	for _, habit := range habits.Habits {
@@ -274,13 +274,13 @@ func (s *Service) updateHabitsSection(doc *markdown.Document, habits *WeeklyHabi
 		// Within same completion status, sort by order
 		return sortedHabits[i].Order < sortedHabits[j].Order
 	})
-	
+
 	// Add habit tasks in sorted order
 	for _, habit := range sortedHabits {
 		task := markdown.NewTask(habit.Completed, habit.Name)
 		habitsHeading.AddChild(task)
 	}
-	
+
 	return nil
 }
 
@@ -296,11 +296,11 @@ func (s *Service) ToggleHabit(year int, weekNumber int, habitName string) error 
 	if err != nil {
 		return err
 	}
-	
+
 	if habit, exists := habits.Habits[habitName]; exists {
 		habit.Completed = !habit.Completed
 	}
-	
+
 	return s.SaveWeeklyHabits(habits)
 }
 
@@ -310,7 +310,7 @@ func (s *Service) AddHabit(year int, weekNumber int, habitName string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	// Only add if not already exists
 	if _, exists := habits.Habits[habitName]; !exists {
 		// Set order as the next highest order
@@ -326,7 +326,7 @@ func (s *Service) AddHabit(year int, weekNumber int, habitName string) error {
 			Order:     maxOrder + 1,
 		}
 	}
-	
+
 	return s.SaveWeeklyHabits(habits)
 }
 
@@ -336,9 +336,9 @@ func (s *Service) RemoveHabit(year int, weekNumber int, habitName string) error 
 	if err != nil {
 		return err
 	}
-	
+
 	delete(habits.Habits, habitName)
-	
+
 	return s.SaveWeeklyHabits(habits)
 }
 
@@ -348,13 +348,13 @@ func (s *Service) ReorderHabits(year int, weekNumber int, habitNames []string) e
 	if err != nil {
 		return err
 	}
-	
+
 	// Update order for each habit based on position in array
 	for i, habitName := range habitNames {
 		if habit, exists := habits.Habits[habitName]; exists {
 			habit.Order = i
 		}
 	}
-	
+
 	return s.SaveWeeklyHabits(habits)
 }

@@ -32,7 +32,7 @@ type BaseNode struct {
 	parent   Node
 }
 
-func (n *BaseNode) Type() NodeType { return n.NodeType }
+func (n *BaseNode) Type() NodeType   { return n.NodeType }
 func (n *BaseNode) Children() []Node { return n.children }
 func (n *BaseNode) AddChild(child Node) {
 	n.children = append(n.children, child)
@@ -51,7 +51,7 @@ func (n *BaseNode) ClearChildren() {
 func AddChildNode(parent Node, child Node) {
 	parent.AddChild(child)
 }
-func (n *BaseNode) Parent() Node { return n.parent }
+func (n *BaseNode) Parent() Node          { return n.parent }
 func (n *BaseNode) SetParent(parent Node) { n.parent = parent }
 
 // Document represents the root of a markdown document tree
@@ -76,7 +76,7 @@ func (d *Document) AddChild(child Node) {
 // Heading represents an ATX heading node
 type Heading struct {
 	BaseNode
-	Level int    // 1-6
+	Level int // 1-6
 	Title string
 }
 
@@ -183,15 +183,15 @@ func NewText(content string) *Text {
 // FindHeadings recursively finds all heading nodes in the tree
 func FindHeadings(node Node) []*Heading {
 	var headings []*Heading
-	
+
 	if h, ok := node.(*Heading); ok {
 		headings = append(headings, h)
 	}
-	
+
 	for _, child := range node.Children() {
 		headings = append(headings, FindHeadings(child)...)
 	}
-	
+
 	return headings
 }
 
@@ -199,28 +199,28 @@ func FindHeadings(node Node) []*Heading {
 func FindHeadingByTitle(node Node, title string) *Heading {
 	lowerTitle := strings.ToLower(title)
 	headings := FindHeadings(node)
-	
+
 	for _, h := range headings {
 		if strings.ToLower(h.Title) == lowerTitle {
 			return h
 		}
 	}
-	
+
 	return nil
 }
 
 // FindTasks recursively finds all task nodes in the tree
 func FindTasks(node Node) []*Task {
 	var tasks []*Task
-	
+
 	if t, ok := node.(*Task); ok {
 		tasks = append(tasks, t)
 	}
-	
+
 	for _, child := range node.Children() {
 		tasks = append(tasks, FindTasks(child)...)
 	}
-	
+
 	return tasks
 }
 
@@ -228,11 +228,11 @@ func FindTasks(node Node) []*Task {
 func GetNodeDepth(node Node) int {
 	depth := 0
 	current := node
-	
+
 	for current.Parent() != nil {
 		depth++
 		current = current.Parent()
 	}
-	
+
 	return depth
 }

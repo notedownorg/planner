@@ -63,11 +63,11 @@ func TestNodeRelationships(t *testing.T) {
 	doc := NewDocument()
 	heading := NewHeading(1, "Test Heading")
 	para := NewParagraph("Test paragraph")
-	
+
 	// Test adding children
 	doc.AddChild(heading)
 	heading.AddChild(para)
-	
+
 	// Test parent/child relationships
 	assert.Equal(t, doc, heading.Parent())
 	assert.Equal(t, heading, para.Parent())
@@ -119,11 +119,11 @@ func TestFindHeadings(t *testing.T) {
 				h1 := NewHeading(1, "Level 1")
 				h2 := NewHeading(2, "Level 2")
 				h3 := NewHeading(3, "Level 3")
-				
+
 				doc.AddChild(h1)
 				h1.AddChild(h2)
 				h2.AddChild(h3)
-				
+
 				return doc
 			},
 			expected: []string{"Level 1", "Level 2", "Level 3"},
@@ -134,7 +134,7 @@ func TestFindHeadings(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			node := tt.build()
 			headings := FindHeadings(node)
-			
+
 			assert.Len(t, headings, len(tt.expected))
 			for i, expected := range tt.expected {
 				assert.Equal(t, expected, headings[i].Title)
@@ -177,7 +177,7 @@ func TestFindHeadingByTitle(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			heading := FindHeadingByTitle(doc, tt.searchTitle)
-			
+
 			if tt.found {
 				assert.NotNil(t, heading)
 				assert.Equal(t, tt.foundTitle, heading.Title)
@@ -238,7 +238,7 @@ func TestFindTasks(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			node := tt.build()
 			tasks := FindTasks(node)
-			
+
 			assert.Len(t, tasks, tt.expected)
 			for i, checked := range tt.checked {
 				assert.Equal(t, checked, tasks[i].Checked)
@@ -277,11 +277,11 @@ func TestGetNodeDepth(t *testing.T) {
 				h1 := NewHeading(1, "Level 1")
 				h2 := NewHeading(2, "Level 2")
 				para := NewParagraph("Deep content")
-				
+
 				doc.AddChild(h1)
 				h1.AddChild(h2)
 				h2.AddChild(para)
-				
+
 				return para
 			},
 			expected: 3,
@@ -374,48 +374,48 @@ func TestBaseNode_ClearChildren(t *testing.T) {
 func TestComplexDocumentStructure(t *testing.T) {
 	// Create a complex document structure
 	doc := NewDocument()
-	
+
 	// Main heading
 	mainHeading := NewHeading(1, "Week 01")
 	doc.AddChild(mainHeading)
-	
+
 	// Habits section
 	habitsHeading := NewHeading(2, "Habits")
 	mainHeading.AddChild(habitsHeading)
-	
+
 	// Add habits as tasks
 	habit1 := NewTask(false, "Exercise")
 	habit2 := NewTask(true, "Read 30 minutes")
 	habit3 := NewTask(false, "Meditate")
-	
+
 	habitsHeading.AddChild(habit1)
 	habitsHeading.AddChild(habit2)
 	habitsHeading.AddChild(habit3)
-	
+
 	// Notes section
 	notesHeading := NewHeading(2, "Notes")
 	mainHeading.AddChild(notesHeading)
-	
+
 	notesPara := NewParagraph("Some notes for the week")
 	notesHeading.AddChild(notesPara)
-	
+
 	// Verify structure
 	assert.Len(t, doc.Children(), 1)
 	assert.Len(t, mainHeading.Children(), 2)
 	assert.Len(t, habitsHeading.Children(), 3)
 	assert.Len(t, notesHeading.Children(), 1)
-	
+
 	// Test finding specific nodes
 	foundHabits := FindHeadingByTitle(doc, "Habits")
 	assert.NotNil(t, foundHabits)
-	
+
 	tasks := FindTasks(foundHabits)
 	assert.Len(t, tasks, 3)
-	
+
 	// Test clearing habits
 	foundHabits.ClearChildren()
 	assert.Len(t, foundHabits.Children(), 0)
-	
+
 	// Verify parent references were cleared
 	assert.Nil(t, habit1.Parent())
 	assert.Nil(t, habit2.Parent())

@@ -66,7 +66,7 @@ This is content.`,
 				h1 := markdown.NewHeading(1, "Level 1")
 				h2 := markdown.NewHeading(2, "Level 2")
 				h3 := markdown.NewHeading(3, "Level 3")
-				
+
 				h1.AddChild(h2)
 				h2.AddChild(h3)
 				doc.AddChild(h1)
@@ -110,23 +110,23 @@ This is content.`,
 			name: "Complex document",
 			build: func() *markdown.Document {
 				doc := markdown.NewDocument()
-				
+
 				// Week heading
 				week := markdown.NewHeading(1, "Week 51")
 				doc.AddChild(week)
-				
+
 				// Habits section
 				habits := markdown.NewHeading(2, "Habits")
 				habits.AddChild(markdown.NewTask(true, "Exercise"))
 				habits.AddChild(markdown.NewTask(true, "Meditation"))
 				habits.AddChild(markdown.NewTask(false, "Reading"))
 				week.AddChild(habits)
-				
+
 				// Notes section
 				notes := markdown.NewHeading(2, "Notes")
 				notes.AddChild(markdown.NewParagraph("Productive week overall."))
 				week.AddChild(notes)
-				
+
 				return doc
 			},
 			expected: `# Week 51
@@ -303,7 +303,7 @@ func TestUpdateOrCreateHeading(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			doc := markdown.NewDocument()
-			
+
 			// Add existing heading if needed
 			if tt.existingTitle != "" {
 				doc.AddChild(markdown.NewHeading(1, tt.existingTitle))
@@ -527,7 +527,7 @@ More content.`,
 
 			// The output should be equivalent (though whitespace might differ)
 			assert.NotEmpty(t, output)
-			
+
 			// Re-parse to verify structure is maintained
 			doc2, err := reader.ParseMarkdown(output)
 			assert.NoError(t, err)

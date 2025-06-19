@@ -6,9 +6,9 @@ import (
 )
 
 type Config struct {
-	WorkspaceRoot   string          `yaml:"workspace_root"`
-	PeriodicNotes   PeriodicNotes   `yaml:"periodic_notes"`
-	WeeklyView      WeeklyViewConfig `yaml:"weekly_view"`
+	WorkspaceRoot string           `yaml:"workspace_root"`
+	PeriodicNotes PeriodicNotes    `yaml:"periodic_notes"`
+	WeeklyView    WeeklyViewConfig `yaml:"weekly_view"`
 }
 
 type PeriodicNotes struct {

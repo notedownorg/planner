@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { habits as habitTypes } from 'wailsjs/go/models'
-import { GetCurrentWeekHabits, ToggleHabit, AddHabit, RemoveHabit, ReorderHabits } from 'wailsjs/go/main/App'
+import {
+    GetCurrentWeekHabits,
+    ToggleHabit,
+    AddHabit,
+    RemoveHabit,
+    ReorderHabits,
+} from 'wailsjs/go/main/App'
 import { Button } from './ui/button'
 import { GripVertical, X } from 'lucide-react'
 
@@ -18,18 +24,18 @@ interface HabitPillProps {
     draggedIndex: number | null
 }
 
-const HabitPill = ({ 
-    habit, 
-    index, 
-    onToggle, 
-    onDelete, 
-    onEdit, 
-    onDragStart, 
-    onDragOver, 
+const HabitPill = ({
+    habit,
+    index,
+    onToggle,
+    onDelete,
+    onEdit,
+    onDragStart,
+    onDragOver,
     onDrop,
     isDragging,
     dragOverIndex,
-    draggedIndex
+    draggedIndex,
 }: HabitPillProps) => {
     const [isHovered, setIsHovered] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
@@ -62,13 +68,14 @@ const HabitPill = ({
 
     // Check if this is a valid drop target
     const isValidDropTarget = draggedIndex !== null && draggedIndex !== index
-    
+
     const pillClasses = `
         relative inline-flex items-center gap-2 py-2 rounded-full transition-all cursor-pointer
         ${isHovered && !isEditing ? 'px-7' : 'px-3'}
-        ${habit.completed 
-            ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300' 
-            : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+        ${
+            habit.completed
+                ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
+                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
         }
         ${isDragging ? 'opacity-50' : 'hover:scale-105'}
         ${dragOverIndex === index && isValidDropTarget ? 'ring-2 ring-blue-400' : ''}
@@ -96,7 +103,7 @@ const HabitPill = ({
         >
             {/* Drag Handle - Absolute positioned */}
             {isHovered && !isEditing && (
-                <div 
+                <div
                     className="absolute left-1 top-1/2 transform -translate-y-1/2"
                     title="Drag to reorder"
                 >
@@ -111,7 +118,7 @@ const HabitPill = ({
                     onToggle(habit.name)
                 }}
                 className="flex-shrink-0 text-lg leading-none transition-all hover:scale-110"
-                title={habit.completed ? "Mark as incomplete" : "Mark as complete"}
+                title={habit.completed ? 'Mark as incomplete' : 'Mark as complete'}
             >
                 {habit.completed ? '✅' : '⭕'}
             </button>
@@ -128,10 +135,7 @@ const HabitPill = ({
                     autoFocus
                 />
             ) : (
-                <span 
-                    className="text-sm font-medium select-none"
-                    title="Double-click to edit"
-                >
+                <span className="text-sm font-medium select-none" title="Double-click to edit">
                     {habit.name}
                 </span>
             )}
@@ -183,16 +187,15 @@ export const TaskTable = () => {
 
     const getSortedHabits = () => {
         if (!weeklyHabits?.habits) return []
-        
-        return Object.values(weeklyHabits.habits)
-            .sort((a, b) => {
-                // First sort by completion status (incomplete first)
-                if (a.completed !== b.completed) {
-                    return a.completed ? 1 : -1
-                }
-                // Then by order within each group
-                return (a.order || 0) - (b.order || 0)
-            })
+
+        return Object.values(weeklyHabits.habits).sort((a, b) => {
+            // First sort by completion status (incomplete first)
+            if (a.completed !== b.completed) {
+                return a.completed ? 1 : -1
+            }
+            // Then by order within each group
+            return (a.order || 0) - (b.order || 0)
+        })
     }
 
     const handleToggleHabit = async (habitName: string) => {
@@ -207,7 +210,7 @@ export const TaskTable = () => {
 
     const handleAddHabit = async (habitName: string) => {
         if (!habitName.trim()) return
-        
+
         try {
             await AddHabit(habitName.trim())
             await loadHabits()
@@ -231,7 +234,7 @@ export const TaskTable = () => {
 
     const handleEditHabit = async (oldName: string, newName: string) => {
         if (oldName === newName) return
-        
+
         try {
             // Add new habit and remove old one
             await AddHabit(newName)
@@ -260,20 +263,20 @@ export const TaskTable = () => {
 
         const sortedHabits = getSortedHabits()
         const reorderedHabits = [...sortedHabits]
-        
+
         // Move the dragged item to the new position
         const [draggedItem] = reorderedHabits.splice(draggedIndex, 1)
         reorderedHabits.splice(dragOverIndex, 0, draggedItem)
-        
+
         // Update order for all habits based on new positions
         const habitUpdates = reorderedHabits.map((habit, index) => ({
             ...habit,
-            order: index
+            order: index,
         }))
-        
+
         // Extract names in new order
-        const newOrder = habitUpdates.map(habit => habit.name)
-        
+        const newOrder = habitUpdates.map((habit) => habit.name)
+
         try {
             await ReorderHabits(newOrder)
             await loadHabits()
@@ -320,14 +323,14 @@ export const TaskTable = () => {
     const sortedHabits = getSortedHabits()
 
     // Separate incomplete and completed habits
-    const incompleteHabits = sortedHabits.filter(h => !h.completed)
-    const completedHabits = sortedHabits.filter(h => h.completed)
+    const incompleteHabits = sortedHabits.filter((h) => !h.completed)
+    const completedHabits = sortedHabits.filter((h) => h.completed)
 
     return (
         <div className="p-3">
             <div className="flex flex-wrap gap-2 items-center">
                 {/* Incomplete Habit Pills */}
-                {incompleteHabits.map((habit, index) => (
+                {incompleteHabits.map((habit) => (
                     <HabitPill
                         key={habit.name}
                         habit={habit}
@@ -346,7 +349,10 @@ export const TaskTable = () => {
 
                 {/* Add New Habit - positioned after incomplete habits */}
                 {isAddingHabit ? (
-                    <form onSubmit={handleSubmitNewHabit} className="inline-flex items-center gap-1">
+                    <form
+                        onSubmit={handleSubmitNewHabit}
+                        className="inline-flex items-center gap-1"
+                    >
                         <input
                             type="text"
                             value={newHabitName}
@@ -361,7 +367,11 @@ export const TaskTable = () => {
                                     handleCancelAdd()
                                 }
                             }}
-                            placeholder={sortedHabits.length === 0 ? "Add your first habit..." : "Add habit..."}
+                            placeholder={
+                                sortedHabits.length === 0
+                                    ? 'Add your first habit...'
+                                    : 'Add habit...'
+                            }
                             className="px-3 py-2 text-sm rounded-full bg-gray-100 dark:bg-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 w-32"
                             autoFocus
                         />

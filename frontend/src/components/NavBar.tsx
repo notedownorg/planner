@@ -8,7 +8,11 @@ interface NavBarProps {
     requiresSetup: boolean
 }
 
-export function NavBar({ onNavigateToSettings, onNavigateToWeeklyView, requiresSetup }: NavBarProps) {
+export function NavBar({
+    onNavigateToSettings,
+    onNavigateToWeeklyView,
+    requiresSetup,
+}: NavBarProps) {
     const { theme, setTheme } = useTheme()
 
     return (

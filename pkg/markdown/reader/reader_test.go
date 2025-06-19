@@ -14,7 +14,7 @@ func TestParseMarkdown(t *testing.T) {
 		validate func(t *testing.T, doc *markdown.Document)
 	}{
 		{
-			name: "Empty document",
+			name:    "Empty document",
 			content: "",
 			validate: func(t *testing.T, doc *markdown.Document) {
 				assert.NotNil(t, doc)
@@ -22,7 +22,7 @@ func TestParseMarkdown(t *testing.T) {
 			},
 		},
 		{
-			name: "Single heading",
+			name:    "Single heading",
 			content: "# Title",
 			validate: func(t *testing.T, doc *markdown.Document) {
 				assert.Len(t, doc.Children(), 1)
@@ -96,16 +96,16 @@ Todo list pending.`,
 				assert.Len(t, doc.Children(), 1) // Week 51
 				week := doc.Children()[0].(*markdown.Heading)
 				assert.Equal(t, "Week 51", week.Title)
-				
+
 				// Find Monday section
 				monday := markdown.FindHeadingByTitle(doc, "Monday")
 				assert.NotNil(t, monday)
 				assert.Equal(t, 2, monday.Level)
-				
+
 				// Check tasks
 				tasks := markdown.FindTasks(doc)
 				assert.Len(t, tasks, 2)
-				
+
 				// Check Notes subsection
 				notes := markdown.FindHeadingByTitle(doc, "Notes")
 				assert.NotNil(t, notes)
@@ -138,7 +138,7 @@ Todo list pending.`,
 					}
 				}
 				findLists(doc)
-				
+
 				assert.Len(t, lists, 2)
 				assert.False(t, lists[0].Ordered)
 				assert.True(t, lists[1].Ordered)
@@ -208,7 +208,7 @@ func TestParseTask(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			task := parseTask(tt.input)
-			
+
 			if tt.expected == nil {
 				assert.Nil(t, task)
 			} else {
@@ -267,7 +267,7 @@ Discussed timeline and deliverables.
 	// Verify tasks are properly parsed
 	tasks := markdown.FindTasks(doc)
 	assert.Len(t, tasks, 5)
-	
+
 	// Count completed tasks
 	completed := 0
 	for _, task := range tasks {

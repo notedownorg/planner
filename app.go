@@ -25,7 +25,7 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	// Perform your setup here
 	a.ctx = ctx
-	
+
 	// Initialize habit service with config
 	cfg, err := config.Load()
 	if err != nil {
@@ -99,7 +99,7 @@ func (a *App) ToggleHabit(habitName string) error {
 	if a.habitService == nil {
 		return fmt.Errorf("habit service not initialized")
 	}
-	
+
 	// Get current week info
 	year, week := getCurrentWeekInfo()
 	return a.habitService.ToggleHabit(year, week, habitName)
@@ -110,7 +110,7 @@ func (a *App) AddHabit(habitName string) error {
 	if a.habitService == nil {
 		return fmt.Errorf("habit service not initialized")
 	}
-	
+
 	// Get current week info
 	year, week := getCurrentWeekInfo()
 	return a.habitService.AddHabit(year, week, habitName)
@@ -121,7 +121,7 @@ func (a *App) RemoveHabit(habitName string) error {
 	if a.habitService == nil {
 		return fmt.Errorf("habit service not initialized")
 	}
-	
+
 	// Get current week info
 	year, week := getCurrentWeekInfo()
 	return a.habitService.RemoveHabit(year, week, habitName)
@@ -132,7 +132,7 @@ func (a *App) ReorderHabits(habitNames []string) error {
 	if a.habitService == nil {
 		return fmt.Errorf("habit service not initialized")
 	}
-	
+
 	// Get current week info
 	year, week := getCurrentWeekInfo()
 	return a.habitService.ReorderHabits(year, week, habitNames)

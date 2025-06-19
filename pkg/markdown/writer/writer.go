@@ -25,17 +25,17 @@ func writeNode(builder *strings.Builder, node markdown.Node, depth int) {
 			}
 			writeNode(builder, child, depth)
 		}
-		
+
 	case *markdown.Heading:
 		// Write the heading
 		WriteHeading(builder, n.Level, n.Title)
-		
+
 		// Write children with proper spacing
 		for i, child := range n.Children() {
 			// Add spacing logic based on previous and current child types
 			if i > 0 {
 				prev := n.Children()[i-1]
-				
+
 				// Check if previous sibling ends with a task
 				prevEndsWithTask := false
 				if prevHeading, ok := prev.(*markdown.Heading); ok {
@@ -48,7 +48,7 @@ func writeNode(builder *strings.Builder, node markdown.Node, depth int) {
 				} else if _, isTask := prev.(*markdown.Task); isTask {
 					prevEndsWithTask = true
 				}
-				
+
 				// Determine spacing based on node types and previous ending
 				if _, isPrevTask := prev.(*markdown.Task); isPrevTask {
 					if _, isCurrentTask := child.(*markdown.Task); isCurrentTask {
@@ -78,15 +78,15 @@ func writeNode(builder *strings.Builder, node markdown.Node, depth int) {
 			}
 			writeNode(builder, child, depth+1)
 		}
-		
+
 	case *markdown.Paragraph:
 		builder.WriteString(n.Content)
-		
+
 		// Write children
 		for _, child := range n.Children() {
 			writeNode(builder, child, depth+1)
 		}
-		
+
 	case *markdown.Task:
 		// Write task without extra indentation
 		if n.Checked {
@@ -96,9 +96,9 @@ func writeNode(builder *strings.Builder, node markdown.Node, depth int) {
 		}
 		builder.WriteString(n.Content)
 		builder.WriteString("\n")
-		
+
 		// Don't write children for tasks as they contain duplicate content
-		
+
 	case *markdown.List:
 		// Write children (list items)
 		for i, child := range n.Children() {
@@ -107,13 +107,13 @@ func writeNode(builder *strings.Builder, node markdown.Node, depth int) {
 			}
 			writeNode(builder, child, depth+1)
 		}
-		
+
 	case *markdown.ListItem:
 		// Write list item with proper indentation
 		if depth > 0 {
 			builder.WriteString(strings.Repeat("  ", depth-1))
 		}
-		
+
 		// Check if parent is ordered
 		if parent, ok := n.Parent().(*markdown.List); ok && parent.Ordered {
 			// For ordered lists, we'd need to track the index
@@ -121,18 +121,18 @@ func writeNode(builder *strings.Builder, node markdown.Node, depth int) {
 		} else {
 			builder.WriteString("- ")
 		}
-		
+
 		builder.WriteString(n.Content)
 		builder.WriteString("\n")
-		
+
 		// Write children
 		for _, child := range n.Children() {
 			writeNode(builder, child, depth+1)
 		}
-		
+
 	case *markdown.Text:
 		builder.WriteString(n.Content)
-		
+
 		// Write children (though text nodes typically don't have children)
 		for _, child := range n.Children() {
 			writeNode(builder, child, depth+1)
@@ -166,7 +166,7 @@ func WriteHeading(builder *strings.Builder, level int, title string) {
 	if level < 1 || level > 6 {
 		level = 1 // Default to H1 if invalid level
 	}
-	
+
 	// Write the # characters
 	builder.WriteString(strings.Repeat("#", level))
 	builder.WriteString(" ")
@@ -198,24 +198,24 @@ func AddNodeToHeading(heading *markdown.Heading, node markdown.Node) {
 // CreateTaskList creates a list of tasks
 func CreateTaskList(tasks map[string]bool) *markdown.List {
 	list := markdown.NewList(false)
-	
+
 	for content, checked := range tasks {
 		task := markdown.NewTask(checked, content)
 		list.AddChild(task)
 	}
-	
+
 	return list
 }
 
 // UpdateOrCreateHeading finds a heading by title and updates it, or creates a new one
 func UpdateOrCreateHeading(doc *markdown.Document, level int, title string) *markdown.Heading {
 	heading := markdown.FindHeadingByTitle(doc, title)
-	
+
 	if heading != nil {
 		heading.Level = level
 		return heading
 	}
-	
+
 	// Create new heading
 	newHeading := markdown.NewHeading(level, title)
 	doc.AddChild(newHeading)
@@ -225,7 +225,7 @@ func UpdateOrCreateHeading(doc *markdown.Document, level int, title string) *mar
 // WriteList writes a markdown list from a slice of strings
 func WriteList(items []string, ordered bool) string {
 	var builder strings.Builder
-	
+
 	for i, item := range items {
 		if ordered {
 			builder.WriteString(fmt.Sprintf("%d. %s\n", i+1, item))
@@ -233,14 +233,14 @@ func WriteList(items []string, ordered bool) string {
 			builder.WriteString(fmt.Sprintf("- %s\n", item))
 		}
 	}
-	
+
 	return builder.String()
 }
 
 // WriteCheckboxList writes a markdown checkbox list
 func WriteCheckboxList(items map[string]bool) string {
 	var builder strings.Builder
-	
+
 	for item, checked := range items {
 		if checked {
 			builder.WriteString(fmt.Sprintf("- [x] %s\n", item))
@@ -248,14 +248,14 @@ func WriteCheckboxList(items map[string]bool) string {
 			builder.WriteString(fmt.Sprintf("- [ ] %s\n", item))
 		}
 	}
-	
+
 	return builder.String()
 }
 
 // WriteTable writes a simple markdown table
 func WriteTable(headers []string, rows [][]string) string {
 	var builder strings.Builder
-	
+
 	// Write headers
 	builder.WriteString("| ")
 	for _, header := range headers {
@@ -263,14 +263,14 @@ func WriteTable(headers []string, rows [][]string) string {
 		builder.WriteString(" | ")
 	}
 	builder.WriteString("\n")
-	
+
 	// Write separator
 	builder.WriteString("|")
 	for range headers {
 		builder.WriteString(" --- |")
 	}
 	builder.WriteString("\n")
-	
+
 	// Write rows
 	for _, row := range rows {
 		builder.WriteString("| ")
@@ -282,6 +282,6 @@ func WriteTable(headers []string, rows [][]string) string {
 		}
 		builder.WriteString("\n")
 	}
-	
+
 	return builder.String()
 }

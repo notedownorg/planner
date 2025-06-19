@@ -23,9 +23,11 @@ export function SettingsView({ config }: SettingsViewProps) {
             setWorkspacePath(config.WorkspaceRoot || '')
             setWeeklySubdir(config.PeriodicNotes?.WeeklySubdir || '_periodic/weekly')
             setWeeklyNameFormat(config.PeriodicNotes?.WeeklyNameFormat || 'YYYY-[W]WW')
-            setWeeklyComponents(config.WeeklyView?.EnabledComponents || {
-                HabitTracker: true,
-            })
+            setWeeklyComponents(
+                config.WeeklyView?.EnabledComponents || {
+                    HabitTracker: true,
+                }
+            )
         }
     }, [config])
 
@@ -137,11 +139,20 @@ export function SettingsView({ config }: SettingsViewProps) {
                                     className="text-muted-foreground hover:text-foreground relative group"
                                     aria-label="Path relative to workspace root where weekly notes will be stored"
                                 >
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clipRule="evenodd"
+                                        />
                                     </svg>
                                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-background bg-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity duration-150 delay-75 pointer-events-none whitespace-nowrap z-10">
-                                        Path relative to workspace root where weekly notes will be stored
+                                        Path relative to workspace root where weekly notes will be
+                                        stored
                                     </div>
                                 </button>
                             </div>
@@ -153,7 +164,7 @@ export function SettingsView({ config }: SettingsViewProps) {
                                 placeholder="_periodic/weekly"
                             />
                         </div>
-                        
+
                         <div>
                             <div className="flex items-center gap-2 mb-2">
                                 <label className="block text-sm font-medium text-foreground">
@@ -164,11 +175,21 @@ export function SettingsView({ config }: SettingsViewProps) {
                                     className="text-muted-foreground hover:text-foreground relative group"
                                     aria-label="Format for weekly note filenames"
                                 >
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clipRule="evenodd"
+                                        />
                                     </svg>
                                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs text-background bg-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity duration-150 delay-75 pointer-events-none z-10 w-80 text-center">
-                                        Format for weekly note filenames. Use YYYY for year, WW for week number, [W] for literal 'W'. Example: YYYY-[W]WW becomes 2024-W01
+                                        Format for weekly note filenames. Use YYYY for year, WW for
+                                        week number, [W] for literal 'W'. Example: YYYY-[W]WW
+                                        becomes 2024-W01
                                     </div>
                                 </button>
                             </div>
@@ -194,8 +215,16 @@ export function SettingsView({ config }: SettingsViewProps) {
                                     className="text-muted-foreground hover:text-foreground relative group"
                                     aria-label="Choose which components appear in your weekly view"
                                 >
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                    <svg
+                                        className="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clipRule="evenodd"
+                                        />
                                     </svg>
                                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-background bg-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity duration-150 delay-75 pointer-events-none whitespace-nowrap z-10">
                                         Choose which components appear in your weekly view

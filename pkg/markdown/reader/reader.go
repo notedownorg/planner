@@ -24,29 +24,29 @@ func ParseMarkdown(content string) (*markdown.Document, error) {
 		),
 	)
 	source := []byte(content)
-	
+
 	astDoc := md.Parser().Parse(text.NewReader(source))
-	
+
 	// Create the document root
 	doc := markdown.NewDocument()
-	
+
 	// Build the tree by walking the AST
 	err := buildTree(doc, astDoc, source)
-	
+
 	return doc, err
 }
 
 // buildTree recursively builds our tree from the goldmark AST
 func buildTree(parent markdown.Node, astNode ast.Node, source []byte) error {
 	var headingStack []*markdown.Heading
-	
+
 	// Process each child of the current AST node
 	for child := astNode.FirstChild(); child != nil; child = child.NextSibling() {
 		node, err := convertASTNode(child, source)
 		if err != nil {
 			return err
 		}
-		
+
 		if node != nil {
 			//fmt.Printf("Created node: %T\n", node)
 			switch n := node.(type) {
@@ -55,17 +55,17 @@ func buildTree(parent markdown.Node, astNode ast.Node, source []byte) error {
 				for len(headingStack) > 0 && headingStack[len(headingStack)-1].Level >= n.Level {
 					headingStack = headingStack[:len(headingStack)-1]
 				}
-				
+
 				// Add to appropriate parent
 				if len(headingStack) > 0 {
 					headingStack[len(headingStack)-1].AddChild(n)
 				} else {
 					parent.AddChild(n)
 				}
-				
+
 				// Push to stack
 				headingStack = append(headingStack, n)
-				
+
 			default:
 				// Add to current heading if exists, otherwise to parent
 				if len(headingStack) > 0 {
@@ -74,7 +74,7 @@ func buildTree(parent markdown.Node, astNode ast.Node, source []byte) error {
 					parent.AddChild(node)
 				}
 			}
-			
+
 			// Recursively process children only for non-text nodes
 			if _, isText := node.(*markdown.Text); !isText {
 				if err := buildTree(node, child, source); err != nil {
@@ -89,7 +89,7 @@ func buildTree(parent markdown.Node, astNode ast.Node, source []byte) error {
 			}
 		}
 	}
-	
+
 	return nil
 }
 
@@ -97,12 +97,12 @@ func buildTree(parent markdown.Node, astNode ast.Node, source []byte) error {
 func convertASTNode(astNode ast.Node, source []byte) (markdown.Node, error) {
 	// Debug: print the AST node type
 	//fmt.Printf("Converting AST node: %T\n", astNode)
-	
+
 	switch node := astNode.(type) {
 	case *ast.Heading:
 		title := extractNodeText(node, source)
 		return markdown.NewHeading(node.Level, title), nil
-		
+
 	case *ast.Paragraph:
 		// Check if this paragraph contains a task
 		text := extractNodeText(node, source)
@@ -110,16 +110,16 @@ func convertASTNode(astNode ast.Node, source []byte) (markdown.Node, error) {
 			return task, nil
 		}
 		return markdown.NewParagraph(text), nil
-		
+
 	case *ast.List:
 		ordered := node.IsOrdered()
 		return markdown.NewList(ordered), nil
-		
+
 	case *ast.ListItem:
 		// Check if this list item contains a task checkbox
 		hasTaskCheckBox := false
 		var isChecked bool
-		
+
 		// Walk through all descendants to find TaskCheckBox
 		ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 			if entering {
@@ -131,25 +131,25 @@ func convertASTNode(astNode ast.Node, source []byte) (markdown.Node, error) {
 			}
 			return ast.WalkContinue, nil
 		})
-		
+
 		// Extract the content (excluding the checkbox)
 		content := extractListItemText(node, source)
-		
+
 		if hasTaskCheckBox {
 			return markdown.NewTask(isChecked, content), nil
 		}
-		
+
 		return markdown.NewListItem(content), nil
-		
+
 	case *extast.TaskCheckBox:
 		// These are handled in the ListItem case
 		return nil, nil
-		
+
 	case *ast.TextBlock:
 		// Handle text blocks
 		content := extractNodeText(node, source)
 		return markdown.NewText(content), nil
-		
+
 	case *ast.Text:
 		// Skip text nodes that are direct children of headings
 		// as the heading text is already extracted in the heading creation
@@ -160,7 +160,7 @@ func convertASTNode(astNode ast.Node, source []byte) (markdown.Node, error) {
 		}
 		content := string(node.Segment.Value(source))
 		return markdown.NewText(content), nil
-		
+
 	default:
 		// For other node types, we'll process their children but not create a node
 		return nil, nil
@@ -170,7 +170,7 @@ func convertASTNode(astNode ast.Node, source []byte) (markdown.Node, error) {
 // extractNodeText extracts all text content from a node
 func extractNodeText(node ast.Node, source []byte) string {
 	var text strings.Builder
-	
+
 	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering {
 			if textNode, ok := n.(*ast.Text); ok {
@@ -179,14 +179,14 @@ func extractNodeText(node ast.Node, source []byte) string {
 		}
 		return ast.WalkContinue, nil
 	})
-	
+
 	return strings.TrimSpace(text.String())
 }
 
 // extractListItemText extracts text content from a list item, excluding task checkbox
 func extractListItemText(node ast.Node, source []byte) string {
 	var text strings.Builder
-	
+
 	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering {
 			// Skip TaskCheckBox nodes
@@ -199,7 +199,7 @@ func extractListItemText(node ast.Node, source []byte) string {
 		}
 		return ast.WalkContinue, nil
 	})
-	
+
 	return strings.TrimSpace(text.String())
 }
 
@@ -213,4 +213,3 @@ func parseTask(text string) *markdown.Task {
 	}
 	return nil
 }
-
