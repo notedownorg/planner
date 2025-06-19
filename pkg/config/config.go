@@ -6,7 +6,36 @@ import (
 )
 
 type Config struct {
-	WorkspaceRoot string `yaml:"workspace_root"`
+	WorkspaceRoot string           `yaml:"workspace_root"`
+	PeriodicNotes PeriodicNotes    `yaml:"periodic_notes"`
+	WeeklyView    WeeklyViewConfig `yaml:"weekly_view"`
+}
+
+type PeriodicNotes struct {
+	WeeklySubdir     string `yaml:"weekly_subdir"`
+	WeeklyNameFormat string `yaml:"weekly_name_format"`
+}
+
+type WeeklyViewConfig struct {
+	EnabledComponents WeeklyViewComponents `yaml:"enabled_components"`
+}
+
+type WeeklyViewComponents struct {
+	HabitTracker bool `yaml:"habit_tracker"`
+}
+
+func NewConfigWithDefaults() *Config {
+	return &Config{
+		PeriodicNotes: PeriodicNotes{
+			WeeklySubdir:     "_periodic/weekly",
+			WeeklyNameFormat: "YYYY-[W]WW",
+		},
+		WeeklyView: WeeklyViewConfig{
+			EnabledComponents: WeeklyViewComponents{
+				HabitTracker: true,
+			},
+		},
+	}
 }
 
 func GetConfigPath() (string, error) {

@@ -1,14 +1,18 @@
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/components/providers/ThemeProvider'
-import { Moon, Sun, Settings, Home } from 'lucide-react'
+import { Moon, Sun, Settings, CalendarRange } from 'lucide-react'
 
 interface NavBarProps {
-    onNavigateToHome: () => void
     onNavigateToSettings: () => void
+    onNavigateToWeeklyView: () => void
     requiresSetup: boolean
 }
 
-export function NavBar({ onNavigateToHome, onNavigateToSettings, requiresSetup }: NavBarProps) {
+export function NavBar({
+    onNavigateToSettings,
+    onNavigateToWeeklyView,
+    requiresSetup,
+}: NavBarProps) {
     const { theme, setTheme } = useTheme()
 
     return (
@@ -18,11 +22,11 @@ export function NavBar({ onNavigateToHome, onNavigateToSettings, requiresSetup }
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={onNavigateToHome}
+                        onClick={onNavigateToWeeklyView}
                         disabled={requiresSetup}
                     >
-                        <Home className="h-[1.2rem] w-[1.2rem]" />
-                        <span className="sr-only">Go home</span>
+                        <CalendarRange className="h-[1.2rem] w-[1.2rem]" />
+                        <span className="sr-only">Weekly view</span>
                     </Button>
                 </div>
                 <div className="flex items-center space-x-2">

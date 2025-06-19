@@ -1,13 +1,13 @@
 import { NavBar } from '@/components/NavBar'
-import { HomeView } from '@/components/views/HomeView'
 import { SettingsView } from '@/components/views/SettingsView'
 import { SetupView } from '@/components/views/SetupView'
+import { WeeklyView } from '@/components/views/WeeklyView'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import React from 'react'
 import { GetConfig } from 'wailsjs/go/main/App'
 import { config } from 'wailsjs/go/models'
 
-type View = 'home' | 'settings'
+type View = 'weekly' | 'settings'
 
 function App() {
     const [currentView, setCurrentView] = React.useState<View>('settings')
@@ -28,7 +28,7 @@ function App() {
             setRequiresSetup(!hasWorkspace)
 
             if (hasWorkspace) {
-                setCurrentView('home')
+                setCurrentView('weekly')
             }
         } catch (error) {
             console.error('Failed to load configuration:', error)
@@ -37,9 +37,9 @@ function App() {
         }
     }
 
-    const navigateToHome = () => {
+    const navigateToWeeklyView = () => {
         if (!requiresSetup) {
-            setCurrentView('home')
+            setCurrentView('weekly')
         }
     }
 
@@ -49,7 +49,7 @@ function App() {
 
     const onConfigurationComplete = () => {
         setRequiresSetup(false)
-        setCurrentView('home')
+        setCurrentView('weekly')
         loadConfiguration() // Reload config
     }
 
@@ -61,12 +61,12 @@ function App() {
         }
 
         switch (currentView) {
-            case 'home':
-                return <HomeView />
+            case 'weekly':
+                return <WeeklyView config={appConfig} />
             case 'settings':
                 return <SettingsView config={appConfig} />
             default:
-                return <HomeView />
+                return <WeeklyView config={appConfig} />
         }
     }
 
@@ -74,7 +74,7 @@ function App() {
         <ThemeProvider defaultTheme="system">
             <div className="min-h-screen bg-background flex flex-col">
                 <NavBar
-                    onNavigateToHome={navigateToHome}
+                    onNavigateToWeeklyView={navigateToWeeklyView}
                     onNavigateToSettings={navigateToSettings}
                     requiresSetup={requiresSetup}
                 />

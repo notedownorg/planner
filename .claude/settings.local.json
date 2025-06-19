@@ -8,7 +8,9 @@
       "Bash(npm run build:*)",
       "Bash(grep:*)",
       "Bash(go test:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(wails build:*)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }

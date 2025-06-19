@@ -11,6 +11,17 @@ jest.mock('wailsjs/go/models')
 describe('SettingsView', () => {
     const mockConfig = {
         WorkspaceRoot: '/Users/test/workspace',
+        PeriodicNotes: {
+            WeeklySubdir: '_periodic/weekly',
+            WeeklyNameFormat: 'YYYY-[W]WW',
+        },
+        WeeklyView: {
+            EnabledComponents: {
+                HabitTracker: true,
+            },
+            convertValues: () => {},
+        },
+        convertValues: () => {},
     }
 
     beforeEach(() => {
@@ -110,7 +121,24 @@ describe('SettingsView', () => {
     })
 
     it('validates that save button is disabled for empty workspace path', () => {
-        render(<SettingsView config={{ WorkspaceRoot: '' }} />)
+        render(
+            <SettingsView
+                config={{
+                    WorkspaceRoot: '',
+                    PeriodicNotes: {
+                        WeeklySubdir: '_periodic/weekly',
+                        WeeklyNameFormat: 'YYYY-[W]WW',
+                    },
+                    WeeklyView: {
+                        EnabledComponents: {
+                            HabitTracker: true,
+                        },
+                        convertValues: () => {},
+                    },
+                    convertValues: () => {},
+                }}
+            />
+        )
 
         // Save button should be disabled when path is empty
         const saveButton = screen.getByRole('button', { name: 'Save Settings' })
@@ -133,9 +161,20 @@ describe('SettingsView', () => {
         await user.click(screen.getByRole('button', { name: 'Save Settings' }))
 
         await waitFor(() => {
-            expect(AppModule.SaveConfig).toHaveBeenCalledWith({
-                WorkspaceRoot: '/Users/test/workspace',
-            })
+            expect(AppModule.SaveConfig).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    WorkspaceRoot: '/Users/test/workspace',
+                    PeriodicNotes: expect.objectContaining({
+                        WeeklySubdir: '_periodic/weekly',
+                        WeeklyNameFormat: 'YYYY-[W]WW',
+                    }),
+                    WeeklyView: expect.objectContaining({
+                        EnabledComponents: expect.objectContaining({
+                            HabitTracker: true,
+                        }),
+                    }),
+                })
+            )
         })
     })
 
@@ -163,7 +202,24 @@ describe('SettingsView', () => {
     })
 
     it('disables save button when path is empty', () => {
-        render(<SettingsView config={{ WorkspaceRoot: '' }} />)
+        render(
+            <SettingsView
+                config={{
+                    WorkspaceRoot: '',
+                    PeriodicNotes: {
+                        WeeklySubdir: '_periodic/weekly',
+                        WeeklyNameFormat: 'YYYY-[W]WW',
+                    },
+                    WeeklyView: {
+                        EnabledComponents: {
+                            HabitTracker: true,
+                        },
+                        convertValues: () => {},
+                    },
+                    convertValues: () => {},
+                }}
+            />
+        )
 
         expect(screen.getByRole('button', { name: 'Save Settings' })).toBeDisabled()
     })

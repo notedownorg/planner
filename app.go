@@ -3,14 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/notedownorg/planner/pkg/config"
+	"github.com/notedownorg/planner/pkg/habits"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx          context.Context
+	habitService *habits.Service
 }
 
 // NewApp creates a new App application struct
@@ -22,6 +25,14 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	// Perform your setup here
 	a.ctx = ctx
+
+	// Initialize habit service with config
+	cfg, err := config.Load()
+	if err != nil {
+		// Use default config if loading fails
+		cfg = config.NewConfigWithDefaults()
+	}
+	a.habitService = habits.NewService(cfg)
 }
 
 // domReady is called after front-end resources have been loaded
@@ -73,4 +84,65 @@ func (a *App) SelectWorkspaceDirectory() (string, error) {
 // ValidateWorkspacePath validates if the given path is suitable for a workspace
 func (a *App) ValidateWorkspacePath(path string) error {
 	return config.ValidateWorkspacePath(path)
+}
+
+// GetCurrentWeekHabits returns habits for the current week
+func (a *App) GetCurrentWeekHabits() (*habits.WeeklyHabits, error) {
+	if a.habitService == nil {
+		return nil, fmt.Errorf("habit service not initialized")
+	}
+	return a.habitService.GetCurrentWeekHabits()
+}
+
+// ToggleHabit toggles the completion status of a habit for the current week
+func (a *App) ToggleHabit(habitName string) error {
+	if a.habitService == nil {
+		return fmt.Errorf("habit service not initialized")
+	}
+
+	// Get current week info
+	year, week := getCurrentWeekInfo()
+	return a.habitService.ToggleHabit(year, week, habitName)
+}
+
+// AddHabit adds a new habit to the current week
+func (a *App) AddHabit(habitName string) error {
+	if a.habitService == nil {
+		return fmt.Errorf("habit service not initialized")
+	}
+
+	// Get current week info
+	year, week := getCurrentWeekInfo()
+	return a.habitService.AddHabit(year, week, habitName)
+}
+
+// RemoveHabit removes a habit from the current week
+func (a *App) RemoveHabit(habitName string) error {
+	if a.habitService == nil {
+		return fmt.Errorf("habit service not initialized")
+	}
+
+	// Get current week info
+	year, week := getCurrentWeekInfo()
+	return a.habitService.RemoveHabit(year, week, habitName)
+}
+
+// ReorderHabits reorders habits for the current week
+func (a *App) ReorderHabits(habitNames []string) error {
+	if a.habitService == nil {
+		return fmt.Errorf("habit service not initialized")
+	}
+
+	// Get current week info
+	year, week := getCurrentWeekInfo()
+	return a.habitService.ReorderHabits(year, week, habitNames)
+}
+
+// getCurrentWeekInfo gets the current ISO week information
+func getCurrentWeekInfo() (int, int) {
+	// This should match the frontend implementation
+	// Using time.Now().ISOWeek() for consistency
+	now := time.Now()
+	year, week := now.ISOWeek()
+	return year, week
 }
