@@ -40,8 +40,8 @@ describe('App Component', () => {
             ).toBeInTheDocument()
         })
 
-        // Home button should be disabled in setup mode
-        expect(screen.getByRole('button', { name: 'Go home' })).toBeDisabled()
+        // Weekly view button should be disabled in setup mode
+        expect(screen.getByRole('button', { name: 'Weekly view' })).toBeDisabled()
     })
 
     it('shows setup view when GetConfig fails', async () => {
@@ -87,8 +87,8 @@ describe('App Component', () => {
             expect(screen.getByRole('button', { name: /Count up/ })).toBeInTheDocument()
         })
 
-        // Home button should not be disabled
-        expect(screen.getByRole('button', { name: 'Go home' })).not.toBeDisabled()
+        // Weekly view button should not be disabled
+        expect(screen.getByRole('button', { name: 'Weekly view' })).not.toBeDisabled()
     })
 
     it('prevents navigation to home when in setup mode', async () => {
@@ -117,12 +117,12 @@ describe('App Component', () => {
             expect(screen.getByText('Welcome to Notedown Planner')).toBeInTheDocument()
         })
 
-        // Home button should be disabled
-        const homeButton = screen.getByRole('button', { name: 'Go home' })
-        expect(homeButton).toBeDisabled()
+        // Weekly view button should be disabled
+        const weeklyViewButton = screen.getByRole('button', { name: 'Weekly view' })
+        expect(weeklyViewButton).toBeDisabled()
 
         // Clicking disabled button shouldn't do anything
-        await user.click(homeButton)
+        await user.click(weeklyViewButton)
         expect(screen.getByText('Welcome to Notedown Planner')).toBeInTheDocument()
     })
 
@@ -188,8 +188,8 @@ describe('App Component', () => {
             ).toBeInTheDocument()
         })
 
-        // Home button should be disabled
-        expect(screen.getByRole('button', { name: 'Go home' })).toBeDisabled()
+        // Weekly view button should be disabled
+        expect(screen.getByRole('button', { name: 'Weekly view' })).toBeDisabled()
     })
 
     it('requires setup when workspace path is null', async () => {

@@ -1,9 +1,9 @@
-import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { jest } from '@jest/globals'
 import { TaskTable } from '../TaskTable'
+import { habits } from 'wailsjs/go/models'
 
 // Mock the Wails API functions
 jest.mock('wailsjs/go/main/App', () => ({
@@ -17,7 +17,7 @@ jest.mock('wailsjs/go/main/App', () => ({
 import * as App from 'wailsjs/go/main/App'
 
 describe('TaskTable', () => {
-    const mockHabits = {
+    const mockHabits = new habits.WeeklyHabits({
         year: 2024,
         week_number: 1,
         habits: {
@@ -26,15 +26,15 @@ describe('TaskTable', () => {
             Meditate: { name: 'Meditate', completed: true, order: 2 },
         },
         day_status: {},
-    }
+    })
 
     beforeEach(() => {
         jest.clearAllMocks()
-        ;(App.GetCurrentWeekHabits as jest.Mock).mockResolvedValue(mockHabits)
-        ;(App.ToggleHabit as jest.Mock).mockResolvedValue(undefined)
-        ;(App.AddHabit as jest.Mock).mockResolvedValue(undefined)
-        ;(App.RemoveHabit as jest.Mock).mockResolvedValue(undefined)
-        ;(App.ReorderHabits as jest.Mock).mockResolvedValue(undefined)
+        ;(App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>).mockResolvedValue(mockHabits)
+        ;(App.ToggleHabit as jest.MockedFunction<typeof App.ToggleHabit>).mockResolvedValue(undefined)
+        ;(App.AddHabit as jest.MockedFunction<typeof App.AddHabit>).mockResolvedValue(undefined)
+        ;(App.RemoveHabit as jest.MockedFunction<typeof App.RemoveHabit>).mockResolvedValue(undefined)
+        ;(App.ReorderHabits as jest.MockedFunction<typeof App.ReorderHabits>).mockResolvedValue(undefined)
     })
 
     describe('Rendering', () => {
@@ -44,7 +44,9 @@ describe('TaskTable', () => {
         })
 
         it('should render habits after loading', async () => {
-            render(<TaskTable />)
+            await act(async () => {
+                render(<TaskTable />)
+            })
 
             await waitFor(() => {
                 expect(screen.getByText('Exercise')).toBeInTheDocument()
@@ -83,9 +85,11 @@ describe('TaskTable', () => {
         })
 
         it('should render error state when loading fails', async () => {
-            ;(App.GetCurrentWeekHabits as jest.Mock).mockRejectedValue(new Error('Network error'))
+            ;(App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>).mockRejectedValue(new Error('Network error'))
 
-            render(<TaskTable />)
+            await act(async () => {
+                render(<TaskTable />)
+            })
 
             await waitFor(() => {
                 expect(screen.getByText('Failed to load habits')).toBeInTheDocument()
@@ -183,7 +187,7 @@ describe('TaskTable', () => {
             await user.type(input, 'Test')
 
             expect(screen.getByTitle('Add habit')).toBeInTheDocument()
-            expect(screen.getByText('✅')).toBeInTheDocument()
+            expect(screen.getAllByText('✅')).toContain(screen.getByTitle('Add habit'))
         })
     })
 
@@ -272,7 +276,11 @@ describe('TaskTable', () => {
             const habitPill = screen.getByText('Exercise').closest('div')!
             await user.hover(habitPill)
 
-            const deleteButton = screen.getAllByTitle('Remove habit')[0]
+            const deleteButtons = screen.getAllByTitle('Remove habit')
+            const deleteButton = deleteButtons.find(btn => 
+                btn.closest('[data-testid]')?.getAttribute('data-testid')?.includes('Exercise') ||
+                btn.parentElement?.textContent?.includes('Exercise')
+            ) || deleteButtons[0]
             await user.click(deleteButton)
 
             expect(App.RemoveHabit).toHaveBeenCalledWith('Exercise')
@@ -347,15 +355,17 @@ describe('TaskTable', () => {
         })
 
         it('should show placeholder text when no habits exist', async () => {
-            ;(App.GetCurrentWeekHabits as jest.Mock).mockResolvedValue({
+            ;(App.GetCurrentWeekHabits as jest.MockedFunction<typeof App.GetCurrentWeekHabits>).mockResolvedValue(new habits.WeeklyHabits({
                 year: 2024,
                 week_number: 1,
                 habits: {},
                 day_status: {},
-            })
+            }))
 
             const user = userEvent.setup()
-            render(<TaskTable />)
+            await act(async () => {
+                render(<TaskTable />)
+            })
 
             await waitFor(() => {
                 expect(screen.getByTitle('Add new habit')).toBeInTheDocument()
